@@ -1,0 +1,3 @@
+<input id="message" [(ngModel)]="$message" placeholder="Enter message here">
+<button (click) = "this.sendMessage()">Send message</button>
+<p *ngIf="messageSent">Message Delivered!</p>
