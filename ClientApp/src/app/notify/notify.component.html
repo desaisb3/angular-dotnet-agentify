@@ -1,42 +1,15 @@
-<!-- <div class="minimizeContainer">
-  <div class="chat">
-    <div height="auto" overflow="auto" class="test" *ngFor="let text of texts; let i = index">
-      <p class="myMessage"> {{ text[0] }}&#11088; {{ text[1] }}</p>
-      <p class="myMessage">{{ text }}</p>
-      <br><br><br>
-      <p class="response">{{ preset[i] }}</p>
-      <br><br><br>
-    </div>
-    <textarea
-      #notificationMessage = ""
-      class="textMessage"
-      id="notificationInput"
-      placeholder="Click to message."
-      spellcheck="true"
-      cols="22"
-      onkeypress="textSent(notificationMessage.value)"
-      cdkTextareaAutosize
-      #autosize="cdkTextareaAutosize"
-      cdkAutosizeMinRows="1"
-      cdkAutosizeMaxRows="5"></textarea>
-      <button class="sendButton" (click)="textSent(notificationMessage.value)" mat-icon-button><mat-icon class="sendIcon">send</mat-icon></button>
-  </div>
-</div> -->
-
 <div class="minimizeContainer">
   <div class="head_of_sms">
     <h6 class="title" style="text-align: center; vertical-align: middle;">DaVinci Chat &#9729;</h6>
   </div>
   <div class="chat">
-    <div class="paragraphs" height="auto" overflow="auto" *ngFor="let text of texts; let i = index">
-      <!-- <p class="myMessage">{{ text }}</p> -->
+    <div class="paragraphs" height="auto" overflow="auto" *ngFor="let text of texts">
       <p class="myMessage"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
       <p class="date">{{text[2] | date: 'h:mm a'}}</p>
-      <!-- <br><br><br> -->
-    <!-- <div height="auto" overflow="auto" *ngFor="let response of preset"> -->
-      <p class="response"><b>{{ preset[i][0] }}</b><br> {{ preset[i][1] }}</p>
-      <!-- <br><br><br> -->
-    <!-- </div> -->
+    </div>
+    <div class="messageReceived" height="auto" overflow="auto" *ngFor="let response of preset">
+      <p class="response"><b>{{ response[0] }}</b><br> {{ response[1] }}</p>
+      <p class="responseDate">{{response[2] | date: 'h:mm a'}}</p>
     </div>
   </div>
   <div class="textBar">
