@@ -3,13 +3,15 @@
     <h6 class="title" style="text-align: center; vertical-align: middle;">DaVinci Chat &#9729;</h6>
   </div>
   <div class="chat">
-    <div class="paragraphs" height="auto" overflow="auto" *ngFor="let text of texts">
-      <p class="myMessage"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
-      <p class="date">{{text[2] | date: 'h:mm a'}}</p>
-    </div>
-    <div class="messageReceived" height="auto" overflow="auto" *ngFor="let response of preset">
-      <p class="response"><b>{{ response[0] }}</b><br> {{ response[1] }}</p>
-      <p class="responseDate">{{response[2] | date: 'h:mm a'}}</p>
+    <div class="paragraphs" *ngFor="let text of texts">
+      <div class="sentTexts" height="auto" overflow="auto" *ngIf="text[3] == 'send'">
+        <p class="myMessage"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
+        <p class="date">{{text[2] | date: 'h:mm a'}}</p>
+      </div>
+      <div class="messageReceived" height="auto" overflow="auto" *ngIf="text[3] == 'receive'">
+        <p class="response"><b>{{ text[0] }}</b><br> {{ text[1] }}</p>
+        <p class="responseDate">{{text[2] | date: 'h:mm a'}}</p>
+      </div>
     </div>
   </div>
   <div class="textBar">

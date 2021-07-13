@@ -17,6 +17,7 @@ export class NotifyComponent implements OnInit {
   public texts = [];
   public preset = [];
   public sendingMessage = new Message();
+  public userId: string = new Date().getTime().toString();
   /*public preset = [["ESPN NBA Draft Bot", "Nah'shon Hyland Season Stats: 19.5 PTS, 4.7 REBS, 2.1 AST, 44.7% FG%"], ["ESPN NBA Draft Bot", "Cade Cunningham Season Stats: 20.1 PTS, 6.2 REBS, 3.5 AST, 43.8% FG%"], ["ESPN NBA Draft Bot", "Jalen Green Season Stats: 17.9 PTS, 4.1 REBS, 2.8 AST, 46.1% FG%"],
     ["ESPN NBA Draft Bot", "Evan Mobley Season Stats: 16.4 PTS, 8.7 REBS, 2.4 AST, 57.8% FG%"], ["ESPN NBA Draft Bot", "Jalen Suggs Season Stats: 14.4 PTS, 5.3 REBS, 4.5 AST, 50.3% FG%"], ["ESPN NBA Draft Bot", "James Bouknight Season Stats: 18.7 PTS, 5.7 REBS, 1.8 AST, 44.7% FG%"], ["ESPN NBA Draft Bot", "Jonathan Kuminga Season Stats: 15.8 PTS, 7.2 REBS, 2.7 AST, 38.7% FG%"],
     ["ESPN NBA Draft Bot", "Scottie Barnes Season Stats: 10.3 PTS, 4.0 REBS, 4.1 AST, 50.3% FG%"], ["ESPN NBA Draft Bot", "Davion Mitchell Season Stats: 14.0 PTS, 2.7 REBS, 5.5 AST, 51.1% FG%"], ["ESPN NBA Draft Bot", "Josh Giddy Season Stats: 10.9 PTS, 7.4 REBS, 7.5 AST, 42.7% FG%"], ["ESPN NBA Draft Bot", "Franz Wagner Season Stats: 12.5 PTS, 6.5 REBS, 3.0 AST, 47.7% FG%"],
@@ -51,14 +52,18 @@ export class NotifyComponent implements OnInit {
     (<HTMLInputElement>document.getElementById('notificationInput')).value = "";
     let userName = (await getUserDetails()).firstName + " " + (await getUserDetails()).lastName;
     let myDate: Date = new Date();
-    let arr =  [userName, inputText, myDate];
+    let arr =  [userName, inputText, myDate, "send"];
     this.sendingMessage.message = inputText;
     this.sendingMessage.user = userName;
+    this.sendingMessage.clientid = this.userId;
     console.log(this.sendingMessage.user)
+    console.log(this.userId);
     this.sendingMessage.date = myDate;
+    this.sendingMessage.type = "send";
     if(inputText.trim() != "")
     {
       this.texts.push(arr);
+      this.sendingMessage.type = "receive";
       this.chatService.sendMessage(this.sendingMessage); //Call send message to send it to everyone (Should be the only update required in this method)
     }
   }
@@ -67,9 +72,12 @@ private subscribeToEvents(): void {
   console.log("hey the subscribe to event has been made!");
   this.chatService.messageRecieved.subscribe((message: Message) => {
     this._ngZone.run(() => {
-      let messageArray = [message.user, message.message, message.date];
-      this.preset.push(messageArray); //Becareful to watch for the texts you send that you also recieve. If so error is from here.
-      console.log(this.preset);
+      let messageArray = [message.user, message.message, message.date, message.type, message.clientid];
+      console.log(message.clientid);
+      if(message.clientid !== this.userId) {
+        this.texts.push(messageArray); //Becareful to watch for the texts you send that you also recieve. If so error is from here.
+        console.log(this.texts);
+      }
     })
   })
 }
