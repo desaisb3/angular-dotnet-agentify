@@ -22,6 +22,7 @@ namespace angular_dotnet_agentify.Hubs
 
         public async Task addNewUser(string userName) { 
             var index = new Users(); 
+            Console.WriteLine("Currently in addNewUser");
             //Add a new user to the list only if the 
             //userId(Context.ConnectionId) is unique. 
             //Otherwise ignore it and send the userlist to all clients.  
@@ -51,10 +52,10 @@ namespace angular_dotnet_agentify.Hubs
             Count--; 
             Users.Remove(Context.ConnectionId); 
             //Find the connectionId, remove and update from the list
-            Console.WriteLine("Does it run twice?");
+            Console.WriteLine("Connection id: " + Context.ConnectionId);
+            Console.WriteLine(UserList);
             var index = UserList.Single(r => r.userId == Context.ConnectionId); 
             UserList.Remove(index); 
-            Console.WriteLine("Still removing");
             await Clients.Others.SendAsync("userDisconnected", Context.ConnectionId); 
             await Clients.All.SendAsync("updateCount", Count); 
             await Clients.All.SendAsync("updateUserList", Users); 

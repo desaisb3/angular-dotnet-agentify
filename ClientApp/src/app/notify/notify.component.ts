@@ -46,7 +46,7 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     });
     this.userName = (await getUserDetails()).firstName;
     this.userEmail = (await getUserDetails()).email;
-    this.refreshList();
+    //this.refreshList();
   }
 
   //Method to open the 'Chat Container'
@@ -106,7 +106,7 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
 
   //Method to invoke when the client clicks on the 'Start Chat' button
   //to refresh the Active Users list
-  async refreshList() {
+   async refreshList() {
     this.startButton = false;
     this.closeButton = true;
     this.userName = (await getUserDetails()).firstName;
@@ -153,6 +153,10 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
         console.log(userList);
         this.allUsers=userList;
       });
+    });
+
+    this.chatService.connectionEstablished.subscribe(() => {
+      this.refreshList();
     });
 
     this.chatService.addUser.subscribe((userList)=> {

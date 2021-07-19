@@ -2,6 +2,8 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Message } from '../models/message';
 
+import { getUserDetails } from '@amc-technology/davinci-api';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +18,8 @@ export class ChatService {
   updateUserNameList = new EventEmitter();
   addUser = new EventEmitter();
 
+  userName;
+
   private isConnectionEstablished = false;
   public hubConnection: HubConnection;
 
@@ -23,6 +27,7 @@ export class ChatService {
     this.createConnection();
     this.registerOnServerEvent();
     this.startConnection();
+    //this.refreshList();
   }
 
   //Calls the function NewMessage in the /Hubs/ChatHub which will send the message to all clients
@@ -61,6 +66,17 @@ export class ChatService {
           this.startConnection(); }, 5000);
       });
   }
+
+  /*
+  async refreshList() {
+    //this.startButton = false;
+    //this.closeButton = true;
+    this.userName = (await getUserDetails()).firstName;
+    //Send the username to the server to bind it with connectionID
+    //and send the userlist (Active Users) to all connected clients
+    console.log("is this shit being called?");
+    this.hubConnection.send('addNewUser', this.userName);
+  } */
 
   //Listens for a message coming in and when there is one, sends an event of the data received
   private registerOnServerEvent(): void {
