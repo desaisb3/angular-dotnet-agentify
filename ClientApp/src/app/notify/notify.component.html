@@ -1,19 +1,28 @@
-<div class="minimizeContainer">
+<div class="minimizeContainer" id="notify">
+  <!-- Title on the chat box -->
   <div class="head_of_sms">
-    <h6 class="title" style="text-align: center; vertical-align: middle;">DaVinci Chat &#9729;</h6>
+    <mat-icon class="people" matBadge="{{ usersOnline }}" matBadgeSize="small">people</mat-icon>
+    <h6 class="title" style="text-align: center; margin-bottom: 0px; vertical-align: middle;">DaVinci Chat <mat-icon class="cloudIcon">cloud</mat-icon></h6>
   </div>
-  <div class="chat">
-    <div class="paragraphs" *ngFor="let text of texts">
+  <!-- Container containing all of the messages -->
+  <div #entireChat class="chat">
+    <!-- A loop of the text messages sent and received -->
+    <div class="paragraphs" *ngFor="let text of texts; let i = index">
+      <!-- Checks the type of the message and if it is "sent" by the current user it will follow the css pertaining to sent messages -->
       <div class="sentTexts" height="auto" overflow="auto" *ngIf="text[3] == 'send'">
-        <p class="myMessage"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
+        <!-- Displays the message with the Users DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
+        <p class="myMessage" id="{{ 'message'+i }}"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
         <p class="date">{{text[2] | date: 'h:mm a'}}</p>
       </div>
+      <!-- Checks the type of the message and if it is "received" by the current user it will follow the css pertaining to received messages -->
       <div class="messageReceived" height="auto" overflow="auto" *ngIf="text[3] == 'receive'">
+        <!-- Displays the message with the senders DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
         <p class="response"><b>{{ text[0] }}</b><br> {{ text[1] }}</p>
         <p class="responseDate">{{text[2] | date: 'h:mm a'}}</p>
       </div>
     </div>
   </div>
+  <!-- The bottom container where the send button and textarea are held -->
   <div class="textBar">
     <textarea
       #notificationMessage = ""
@@ -27,6 +36,7 @@
       #autosize="cdkTextareaAutosize"
       cdkAutosizeMinRows="1"
       cdkAutosizeMaxRows="5"></textarea>
+      <!-- On click of the button, calls textSent in the component which grabs the input, creates a message with the input and user data, and clears the input for a new message to be typed -->
       <button class="sendButton" id="sender" (click)="textSent(notificationMessage.value)" mat-icon-button><mat-icon class="sendIcon">send</mat-icon></button>
   </div>
 </div>

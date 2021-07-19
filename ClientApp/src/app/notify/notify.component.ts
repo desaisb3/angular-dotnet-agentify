@@ -1,40 +1,67 @@
 import { ChatService } from './../../services/chat.service';
-import { Component, OnInit, NgZone, ViewChild } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, EventEmitter, Output, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
 import { setAppHeight, initializeComplete, NOTIFICATION_TYPE, INotificationMessage, sendNotification, getUserDetails, getSequenceID } from '@amc-technology/davinci-api';
 
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {take} from 'rxjs/operators';
 import { Notification } from 'rxjs';
 import { Message } from '../../models/message';
+import * as applicationAPI from '@amc-technology/davinci-api';
+
 
 @Component({
   selector: 'app-notify',
   templateUrl: './notify.component.html',
   styleUrls: ['./notify.component.css']
 })
-export class NotifyComponent implements OnInit {
+export class NotifyComponent implements OnInit, INotificationMessage, AfterViewChecked {
 
+  //Creating empty array where messages will be held
   public texts = [];
-  public preset = [];
   public sendingMessage = new Message();
-  public userId: string = new Date().getTime().toString();
-  /*public preset = [["ESPN NBA Draft Bot", "Nah'shon Hyland Season Stats: 19.5 PTS, 4.7 REBS, 2.1 AST, 44.7% FG%"], ["ESPN NBA Draft Bot", "Cade Cunningham Season Stats: 20.1 PTS, 6.2 REBS, 3.5 AST, 43.8% FG%"], ["ESPN NBA Draft Bot", "Jalen Green Season Stats: 17.9 PTS, 4.1 REBS, 2.8 AST, 46.1% FG%"],
-    ["ESPN NBA Draft Bot", "Evan Mobley Season Stats: 16.4 PTS, 8.7 REBS, 2.4 AST, 57.8% FG%"], ["ESPN NBA Draft Bot", "Jalen Suggs Season Stats: 14.4 PTS, 5.3 REBS, 4.5 AST, 50.3% FG%"], ["ESPN NBA Draft Bot", "James Bouknight Season Stats: 18.7 PTS, 5.7 REBS, 1.8 AST, 44.7% FG%"], ["ESPN NBA Draft Bot", "Jonathan Kuminga Season Stats: 15.8 PTS, 7.2 REBS, 2.7 AST, 38.7% FG%"],
-    ["ESPN NBA Draft Bot", "Scottie Barnes Season Stats: 10.3 PTS, 4.0 REBS, 4.1 AST, 50.3% FG%"], ["ESPN NBA Draft Bot", "Davion Mitchell Season Stats: 14.0 PTS, 2.7 REBS, 5.5 AST, 51.1% FG%"], ["ESPN NBA Draft Bot", "Josh Giddy Season Stats: 10.9 PTS, 7.4 REBS, 7.5 AST, 42.7% FG%"], ["ESPN NBA Draft Bot", "Franz Wagner Season Stats: 12.5 PTS, 6.5 REBS, 3.0 AST, 47.7% FG%"],
-    ["ESPN NBA Draft Bot", "Moses Moody Season Stats: 16.8 PTS, 5.8 REBS, 1.6 AST, 42.7% FG%"], ["ESPN NBA Draft Bot", "Corey Kispert Season Stats: 18.6 PTS, 5.0 REBS, 1.8 AST, 52.9% FG%"], ["ESPN NBA Draft Bot", "Keon Johnson Season Stats: 11.3 PTS, 3.5 REBS, 2.5 AST, 44.9% FG%"],  ["ESPN NBA Draft Bot", "Ayo Dosunmu Season Stats: 20.1 PTS, 6.3 REBS, 5.3 AST, 48.8% FG%"]];
-  */
+  //A unique id is created for the hub connection
+  public userUniqueId: string = new Date().getTime().toString();
+  userName;
+  userEmail;
+  startButton = true;
+  closeButton = false;
+  usersOnline;      
+  allUsers;
+  userId;
+  userList: any[] = [];
 
   constructor(private _ngZone: NgZone, private chatService: ChatService) {
     this.subscribeToEvents();
    }
 
+  message: string = "New Message From ";
+  notificationType: NOTIFICATION_TYPE.Information;
+
   @ViewChild('autosize', {static: false}) autosize: CdkTextareaAutosize;
+  @ViewChild('entireChat', {static: false}) chatElement: ElementRef;
 
   async ngOnInit() {
     await initializeComplete().then(configReturn => {
-      setAppHeight(400, true);
       //this.config = configReturn;
     });
+    this.userName = (await getUserDetails()).firstName;
+    this.userEmail = (await getUserDetails()).email;
+    this.refreshList();
+  }
+
+  //Method to open the 'Chat Container'
+  async openChatBox() {
+    this.startButton = false;
+    this.closeButton = true;
+  }
+
+  async closeButton$(){
+    this.closeButton = false;
+    this.startButton = true;
+  }
+
+  ngAfterViewChecked(): void {
+    applicationAPI.setAppHeight(400);
   }
 
   triggerResize() {
@@ -46,8 +73,9 @@ export class NotifyComponent implements OnInit {
   //Occurs on button click or when just enter is pressed
   //  - Parameter: Input string within the textarea
   //  - Makes the text area empty so a new message can be typed
-  //  - Grabs current User's details, the time stamp in HH:MM, and the inputText and places them in an array
+  //  - Grabs current User's details, the time stamp in HH:MM, and the inputText and places them in an array, along with a type in order to dictate the type of message
   //  - Trim the string of potential empty space and if there is still a value, add the message to an array.
+  //  - Setter for a new message that will then be sent to all connected clients
   async textSent(inputText: string) {
     (<HTMLInputElement>document.getElementById('notificationInput')).value = "";
     let userName = (await getUserDetails()).firstName + " " + (await getUserDetails()).lastName;
@@ -55,31 +83,81 @@ export class NotifyComponent implements OnInit {
     let arr =  [userName, inputText, myDate, "send"];
     this.sendingMessage.message = inputText;
     this.sendingMessage.user = userName;
-    this.sendingMessage.clientid = this.userId;
-    console.log(this.sendingMessage.user)
-    console.log(this.userId);
+    this.sendingMessage.clientid = this.userUniqueId;
     this.sendingMessage.date = myDate;
     this.sendingMessage.type = "send";
     if(inputText.trim() != "")
     {
       this.texts.push(arr);
       this.sendingMessage.type = "receive";
+      //setAppHeight(400, true);
       this.chatService.sendMessage(this.sendingMessage); //Call send message to send it to everyone (Should be the only update required in this method)
+      let lastMessage = this.getLastMessage();
+      console.log(lastMessage);
+      // Scrolls to the most recent message, only scrolls for sent messages
+      setTimeout(() => lastMessage.scrollTo({behavior: "smooth", top: lastMessage.scrollHeight}),0);
     }
   }
 
-private subscribeToEvents(): void {
-  console.log("hey the subscribe to event has been made!");
-  this.chatService.messageRecieved.subscribe((message: Message) => {
-    this._ngZone.run(() => {
-      let messageArray = [message.user, message.message, message.date, message.type, message.clientid];
-      console.log(message.clientid);
-      if(message.clientid !== this.userId) {
-        this.texts.push(messageArray); //Becareful to watch for the texts you send that you also recieve. If so error is from here.
-        console.log(this.texts);
-      }
-    })
-  })
-}
+  //Grabs the container in which holds and displays all notification messages
+  public getLastMessage() : HTMLElement {
+    return this.chatElement.nativeElement;
+  }
 
+  //Method to invoke when the client clicks on the 'Start Chat' button
+  //to refresh the Active Users list
+  async refreshList() {
+    this.startButton = false;
+    this.closeButton = true;
+    this.userName = (await getUserDetails()).firstName;
+    //Send the username to the server to bind it with connectionID
+    //and send the userlist (Active Users) to all connected clients
+    this.chatService.hubConnection.send('addNewUser', this.userName);
+  }
+
+  //Subscribes to an event upon the recieval of a message
+  //  -Creates an array with all the values of the message
+  //  -Checks to see if the message was sent from the current user by checking the unique id
+  //  -If the two ids are not the same, add the message to the array of messages
+  private subscribeToEvents(): void {
+    this.chatService.messageRecieved.subscribe((message: Message) => {
+      this._ngZone.run(() => {
+        let messageArray = [message.user, message.message, message.date, message.type, message.clientid];
+        if(message.clientid !== this.userUniqueId) {
+          this.texts.push(messageArray);
+          sendNotification(this.message + message.user, this.notificationType);
+        }
+      });
+    });
+
+    this.chatService.userConnected.subscribe(async (userId)=>{
+      this.userName = (await getUserDetails()).firstName;
+      this.userEmail = (await getUserDetails()).email;
+      console.log(userId + " has joined the chat");
+    });
+
+    this.chatService.updateCount.subscribe((count) => {
+      this._ngZone.run(() => {
+        console.log('Total users = ' + count);
+        this.usersOnline=count;
+      });
+    });
+
+    this.chatService.userDisconnected.subscribe((userId)=>{
+      console.log(userId + " has left the chat");
+    });
+
+    this.chatService.updateUserList.subscribe((userList) => {
+      this._ngZone.run(() => {
+        console.log('Total users = ' + userList);
+        console.log(userList);
+        this.allUsers=userList;
+      });
+    });
+
+    this.chatService.addUser.subscribe((userList)=> {
+      console.log(userList);
+      this.userList = userList;
+    })
+  }
 }
