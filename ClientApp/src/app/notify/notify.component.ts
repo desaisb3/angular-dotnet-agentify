@@ -1,10 +1,8 @@
 import { ChatService } from './../../services/chat.service';
-import { Component, OnInit, NgZone, ViewChild, EventEmitter, Output, ElementRef, AfterViewChecked, OnDestroy } from '@angular/core';
-import { setAppHeight, initializeComplete, NOTIFICATION_TYPE, INotificationMessage, sendNotification, getUserDetails, getSequenceID } from '@amc-technology/davinci-api';
-
+import { Component, OnInit, NgZone, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { initializeComplete, NOTIFICATION_TYPE, INotificationMessage, sendNotification, getUserDetails, setAppHeight } from '@amc-technology/davinci-api';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {take} from 'rxjs/operators';
-import { Notification } from 'rxjs';
 import { Message } from '../../models/message';
 import * as applicationAPI from '@amc-technology/davinci-api';
 
@@ -46,22 +44,11 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     });
     this.userName = (await getUserDetails()).firstName;
     this.userEmail = (await getUserDetails()).email;
-    //this.refreshList();
   }
 
-  //Method to open the 'Chat Container'
-  async openChatBox() {
-    this.startButton = false;
-    this.closeButton = true;
-  }
-
-  async closeButton$(){
-    this.closeButton = false;
-    this.startButton = true;
-  }
 
   ngAfterViewChecked(): void {
-    applicationAPI.setAppHeight(400);
+    applicationAPI.setAppHeight(450);
   }
 
   triggerResize() {
@@ -110,9 +97,10 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     this.startButton = false;
     this.closeButton = true;
     this.userName = (await getUserDetails()).firstName;
+    this.userEmail = (await getUserDetails()).email;
     //Send the username to the server to bind it with connectionID
     //and send the userlist (Active Users) to all connected clients
-    this.chatService.hubConnection.send('addNewUser', this.userName);
+    this.chatService.hubConnection.send('addNewUser', this.userName, this.userEmail);
   }
 
   //Subscribes to an event upon the recieval of a message
@@ -162,6 +150,6 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     this.chatService.addUser.subscribe((userList)=> {
       console.log(userList);
       this.userList = userList;
-    })
+    });
   }
 }

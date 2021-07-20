@@ -17,6 +17,7 @@ export class ChatService {
   updateUserList = new EventEmitter();
   updateUserNameList = new EventEmitter();
   addUser = new EventEmitter();
+  userTyping = new EventEmitter();
 
   userName;
 
@@ -45,7 +46,7 @@ export class ChatService {
       //.withUrl("https://notification.contactcanvas.com/ChatHub")
       //.withUrl("https://localhost:5007/ChatHub")
       this.hubConnection = new HubConnectionBuilder()
-        .withUrl("https://notification.contactcanvas.com/ChatHub") //This is hard coded and will need to be changed later
+        .withUrl("https://notify.contactcanvas.com/ChatHub") //This is hard coded and will need to be changed later
         .build();
   }
 
@@ -67,16 +68,6 @@ export class ChatService {
       });
   }
 
-  /*
-  async refreshList() {
-    //this.startButton = false;
-    //this.closeButton = true;
-    this.userName = (await getUserDetails()).firstName;
-    //Send the username to the server to bind it with connectionID
-    //and send the userlist (Active Users) to all connected clients
-    console.log("is this shit being called?");
-    this.hubConnection.send('addNewUser', this.userName);
-  } */
 
   //Listens for a message coming in and when there is one, sends an event of the data received
   private registerOnServerEvent(): void {
@@ -102,6 +93,10 @@ export class ChatService {
 
     this.hubConnection.on("newUserList", (data)=> {
       this.addUser.emit(data);
+    });
+
+    this.hubConnection.on("userTyping", (data) => {
+      this.userTyping.emit(data);
     })
   }
 

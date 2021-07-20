@@ -1,27 +1,37 @@
+
+<!--Menu for displaying User list-->
+  <mat-menu #menu="matMenu">
+    <b class="active_agents_txt">Agents Active</b>
+    <p *ngFor="let user of userList" mat-menu-item><img src="https://www.clipartmax.com/png/middle/151-1515524_green-light-button.png" class="online_icon" width="10px" height="10px">{{user.username}}</p>
+  </mat-menu>
+
+
 <div class="minimizeContainer" id="notify">
   <!-- Title on the chat box -->
   <div class="head_of_sms">
-    <mat-icon class="people" matBadge="{{ usersOnline }}" matBadgeSize="small">people</mat-icon>
+    <!--Attaching icon button to trigger the userlist from the User List menu-->
+    <button mat-button [matMenuTriggerFor]="menu"><mat-icon class="people" matBadge="{{ usersOnline }}" matBadgeSize="small">people</mat-icon></button>
     <h6 class="title" style="text-align: center; margin-bottom: 0px; vertical-align: middle;">DaVinci Chat <mat-icon class="cloudIcon">cloud</mat-icon></h6>
   </div>
-  <!-- Container containing all of the messages -->
-  <div #entireChat class="chat">
-    <!-- A loop of the text messages sent and received -->
-    <div class="paragraphs" *ngFor="let text of texts; let i = index">
-      <!-- Checks the type of the message and if it is "sent" by the current user it will follow the css pertaining to sent messages -->
-      <div class="sentTexts" height="auto" overflow="auto" *ngIf="text[3] == 'send'">
-        <!-- Displays the message with the Users DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
-        <p class="myMessage" id="{{ 'message'+i }}"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
-        <p class="date">{{text[2] | date: 'h:mm a'}}</p>
-      </div>
-      <!-- Checks the type of the message and if it is "received" by the current user it will follow the css pertaining to received messages -->
-      <div class="messageReceived" height="auto" overflow="auto" *ngIf="text[3] == 'receive'">
-        <!-- Displays the message with the senders DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
-        <p class="response"><b>{{ text[0] }}</b><br> {{ text[1] }}</p>
-        <p class="responseDate">{{text[2] | date: 'h:mm a'}}</p>
+    <!-- Container containing all of the messages -->
+    <div #entireChat class="chat">
+      <!-- A loop of the text messages sent and received -->
+      <div class="paragraphs" *ngFor="let text of texts; let i = index">
+        <!-- Checks the type of the message and if it is "sent" by the current user it will follow the css pertaining to sent messages -->
+        <div class="sentTexts" height="auto" overflow="auto" *ngIf="text[3] == 'send'">
+          <!-- Displays the message with the Users DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
+          <p class="myMessage" id="{{ 'message'+i }}"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
+          <p class="date">{{text[2] | date: 'h:mm a'}}</p>
+        </div>
+        <!-- Checks the type of the message and if it is "received" by the current user it will follow the css pertaining to received messages -->
+        <div class="messageReceived" height="auto" overflow="auto" *ngIf="text[3] == 'receive'">
+          <!-- Displays the message with the senders DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
+          <p class="response"><b>{{ text[0] }}</b><br> {{ text[1] }}</p>
+          <p class="responseDate">{{text[2] | date: 'h:mm a'}}</p>
+        </div>
       </div>
     </div>
-  </div>
+
   <!-- The bottom container where the send button and textarea are held -->
   <div class="textBar">
     <textarea
@@ -40,3 +50,7 @@
       <button class="sendButton" id="sender" (click)="textSent(notificationMessage.value)" mat-icon-button><mat-icon class="sendIcon">send</mat-icon></button>
   </div>
 </div>
+
+
+
+
