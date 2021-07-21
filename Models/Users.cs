@@ -9,5 +9,7 @@ namespace angular_dotnet_agentify.Models
         public string username { get; set; }
 
         public string email { get; set; }
+
+        public string lastname { get; set; }
     }
 }

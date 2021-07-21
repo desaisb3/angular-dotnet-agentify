@@ -20,6 +20,7 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
   //A unique id is created for the hub connection
   public userUniqueId: string = new Date().getTime().toString();
   userName;
+  userLastName;
   userEmail;
   startButton = true;
   closeButton = false;
@@ -43,6 +44,7 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
       //this.config = configReturn;
     });
     this.userName = (await getUserDetails()).firstName;
+    this.userLastName = (await getUserDetails()).lastName;
     this.userEmail = (await getUserDetails()).email;
   }
 
@@ -97,10 +99,11 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     this.startButton = false;
     this.closeButton = true;
     this.userName = (await getUserDetails()).firstName;
+    this.userLastName = (await getUserDetails()).lastName;
     this.userEmail = (await getUserDetails()).email;
     //Send the username to the server to bind it with connectionID
     //and send the userlist (Active Users) to all connected clients
-    this.chatService.hubConnection.send('addNewUser', this.userName, this.userEmail);
+    this.chatService.hubConnection.send('addNewUser', this.userName, this.userEmail, this.userLastName);
   }
 
   //Subscribes to an event upon the recieval of a message

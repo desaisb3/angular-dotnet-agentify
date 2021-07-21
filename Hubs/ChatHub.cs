@@ -20,7 +20,7 @@ namespace angular_dotnet_agentify.Hubs
             await Clients.All.SendAsync("MessageReceived", msg);
         }
 
-        public async Task addNewUser(string userName, string userEmail) { 
+        public async Task addNewUser(string userName, string userEmail, string userLastName) { 
             var index = new Users(); 
             //Add a new user to the list only if the 
             //userId(Context.ConnectionId) is unique. 
@@ -33,7 +33,7 @@ namespace angular_dotnet_agentify.Hubs
                 Console.WriteLine("UserId is unique! Adding this user to the list."); 
             } 
             if(index == null) 
-                UserList.Add(new Users() {userId=Context.ConnectionId, username=userName, email=userEmail}
+                UserList.Add(new Users() {userId=Context.ConnectionId, username=userName, email=userEmail, lastname=userLastName}
             ); 
             await Clients.All.SendAsync("newUserList", UserList); 
         } 
