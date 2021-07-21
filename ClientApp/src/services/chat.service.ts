@@ -44,9 +44,8 @@ export class ChatService {
       .withUrl(window.location.href + '/ChatHub')
       .build(); */
       //.withUrl("https://notification.contactcanvas.com/ChatHub")
-      //.withUrl("https://localhost:5007/ChatHub")
       this.hubConnection = new HubConnectionBuilder()
-        .withUrl("https://notify.contactcanvas.com/ChatHub") //This is hard coded and will need to be changed later
+        .withUrl(window.location.href + 'ChatHub') //This is hard coded and will need to be changed later
         .build();
   }
 

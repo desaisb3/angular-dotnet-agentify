@@ -10,8 +10,9 @@
   <!-- Title on the chat box -->
   <div class="head_of_sms">
     <!--Attaching icon button to trigger the userlist from the User List menu-->
-    <button mat-button [matMenuTriggerFor]="menu"><mat-icon class="people" matBadge="{{ usersOnline }}" matBadgeSize="small">people</mat-icon></button>
-    <h6 class="title" style="text-align: center; margin-bottom: 0px; vertical-align: middle;">DaVinci Chat <mat-icon class="cloudIcon">cloud</mat-icon></h6>
+    <div class="peopleButton" style="width: 20%"><button mat-button [matMenuTriggerFor]="menu"><mat-icon class="people" matBadge="{{ usersOnline }}" matBadgeSize="small">people</mat-icon></button></div>
+    <div class="davinciChatHeader" style="width: 60%; text-align: center; align-self: center;"><h6 class="title" style="margin-bottom: 0px;">DaVinci Chat <mat-icon class="cloudIcon">cloud</mat-icon></h6></div>
+    <div class="filler" style="width: 20%"></div>
   </div>
     <!-- Container containing all of the messages -->
     <div #entireChat class="chat">

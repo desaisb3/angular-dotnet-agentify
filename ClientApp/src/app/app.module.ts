@@ -29,7 +29,7 @@ import {MatMenuModule} from '@angular/material/menu';
     MatBadgeModule,
     MatFormFieldModule,
     RouterModule.forRoot([
-      { path: 'notify', component: NotifyComponent }
+      { path: '', component: NotifyComponent }
     ]),
     BrowserAnimationsModule
   ],
