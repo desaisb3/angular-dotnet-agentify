@@ -2,22 +2,25 @@
   <!-- Title on the chat box -->
   <div class="head_of_sms">
     <!--Attaching icon button to trigger the userlist from the User List menu-->
-    <button mat-button [matMenuTriggerFor]="agents"><mat-icon class="people" matBadge="{{ usersOnline }}" matBadgeSize="small">people</mat-icon></button>
+    <div class="peopleButton" style="width: 20%"><button mat-button [matMenuTriggerFor]="agents"><mat-icon class="people" matBadge="{{ usersOnline }}" matBadgeSize="small">people</mat-icon></button></div>
     <mat-menu #agents="matMenu">
-      <b>Agents Online ({{usersOnline}})</b>
+      <div style="font-size: 14px;"><b>Agents Online ({{usersOnline}})</b></div>
       <div *ngFor="let user of userList">
-        <button mat-menu-item [matMenuTriggerFor]="users"><img src="https://www.clipartmax.com/png/middle/151-1515524_green-light-button.png" class="online_icon" width="10px" height="10px">
+        <button mat-menu-item [matMenuTriggerFor]="users" style="font-size: 12px;"><img src="https://www.clipartmax.com/png/middle/151-1515524_green-light-button.png" class="online_icon" width="10px" height="10px">
           {{user.username}}</button>
         <mat-menu #users="matMenu">
           <mat-menu-item class="details_div">
-            <u><b>Agent Details</b></u><br>
-            <b>Name:</b> {{user.username}} {{user.lastname}}<br>
-            <b>Email:</b> {{user.email}}
+            <div style="text-align: center;"><u><b>Agent Details</b></u><br></div>
+            <div style="margin-left: 5px;">
+              <b>Name:</b> {{user.username}} {{user.lastname}}<br>
+              <b>Email:</b> {{user.email}}
+            </div>
         </mat-menu-item>
         </mat-menu>
       </div>
     </mat-menu>
-    <h6 class="title" style="text-align: center; margin-bottom: 0px; vertical-align: middle;">DaVinci Chat <mat-icon class="cloudIcon">cloud</mat-icon></h6>
+    <div class="davinciChatHeader" style="width: 60%; text-align: center; align-self: center;"><h6 class="title" style="text-align: center; margin-bottom: 0px; vertical-align: middle;">DaVinci Chat <mat-icon class="cloudIcon">cloud</mat-icon></h6></div>
+    <div class="filler" style="width: 20%"></div>
   </div>
     <!-- Container containing all of the messages -->
     <div #entireChat class="chat">
@@ -40,20 +43,19 @@
 
   <!-- The bottom container where the send button and textarea are held -->
   <div class="textBar">
-    <textarea
+    <div style="width: 80%;"><textarea
       #notificationMessage = ""
       class="textMessage"
       id="notificationInput"
-      placeholder="Click to message."
+      placeholder="Type a new message"
       spellcheck="true"
-      cols="22"
       (keyup.enter)="textSent(notificationMessage.value)"
       cdkTextareaAutosize
       #autosize="cdkTextareaAutosize"
       cdkAutosizeMinRows="1"
-      cdkAutosizeMaxRows="5"></textarea>
+      cdkAutosizeMaxRows="5"></textarea></div>
       <!-- On click of the button, calls textSent in the component which grabs the input, creates a message with the input and user data, and clears the input for a new message to be typed -->
-      <button class="sendButton" id="sender" (click)="textSent(notificationMessage.value)" mat-icon-button><mat-icon class="sendIcon">send</mat-icon></button>
+      <div style="width: 20%"><button class="sendButton" id="sender" (click)="textSent(notificationMessage.value)" mat-icon-button><mat-icon class="sendIcon">send</mat-icon></button></div>
   </div>
 </div>
 

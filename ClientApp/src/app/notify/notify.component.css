@@ -55,11 +55,14 @@
   padding: 5px;
   display: flex;
   position: relative;
-  gap: 15px;
 }
 
 .title {
   vertical-align: middle;
+}
+
+.details_div {
+  font-size: 10px;
 }
 
 .textBar {
@@ -68,6 +71,9 @@
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   overflow:auto;
+  display: flex;
+  width:auto;
+  align-self: center;
 }
 
 .textBar::-webkit-scrollbar {
@@ -76,13 +82,12 @@
 
 .textMessage {
   margin-left: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  margin-top: 5px;
+  margin-top: 10px;
   overflow-wrap: break-word;
   display: inline-block;
   vertical-align: middle;
   border-radius: 3px;
+  width: 100%;
 }
 
 .textMessage::-webkit-scrollbar {
