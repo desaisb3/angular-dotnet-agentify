@@ -28,6 +28,8 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
   allUsers;
   userId;
   userList: any[] = [];
+  sorted: any[] = [];
+
 
   constructor(private _ngZone: NgZone, private chatService: ChatService) {
     this.subscribeToEvents();
@@ -153,6 +155,8 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     this.chatService.addUser.subscribe((userList)=> {
       console.log(userList);
       this.userList = userList;
+      //Sorting the usernames list alphabetically
+      this.sorted=this.userList.sort((a,b) => a.username.localeCompare(b.username));
     });
   }
 }
