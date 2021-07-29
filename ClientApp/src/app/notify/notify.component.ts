@@ -22,16 +22,16 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
   userName;
   userLastName;
   userEmail;
-  startButton = true;
-  closeButton = false;
   usersOnline;      
   allUsers;
   userId;
   userList: any[] = [];
-  sorted: any[] = [];
+  sortedList: any[] = [];
   userCount;
   isAgent;
   config;
+  userLeft;
+  messageDelivered = false;
 
 
   constructor(private _ngZone: NgZone, private chatService: ChatService) {
@@ -87,12 +87,21 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     this.sendingMessage.clientid = this.userUniqueId;
     this.sendingMessage.date = myDate;
     this.sendingMessage.type = "send";
-    if(inputText.trim() != "")
+
+    if(this.sortedList.length==1){
+      console.log('Only you are in the chat!');
+      return alert('Only you are in the chat!');
+    }
+
+    if(inputText.trim() != "" && this.sortedList.length>1)
     {
       this.texts.push(arr);
       this.sendingMessage.type = "receive";
-      //setAppHeight(400, true);
       this.chatService.sendMessage(this.sendingMessage); //Call send message to send it to everyone (Should be the only update required in this method)
+      //Invoke 'acknowledgeMessage' method in the server which will
+      //ensure that the message was indeed delivered to all the connected
+      //clients
+      this.chatService.hubConnection.invoke('acknowledgeMessage', "Message Delivered!");
       let lastMessage = this.getLastMessage();
       console.log(lastMessage);
       // Scrolls to the most recent message, only scrolls for sent messages
@@ -108,8 +117,6 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
   //Method to invoke when the client clicks on the 'Start Chat' button
   //to refresh the Active Users list
    async refreshList() {
-    this.startButton = false;
-    this.closeButton = true;
     this.userName = (await getUserDetails()).firstName;
     this.userLastName = (await getUserDetails()).lastName;
     this.userEmail = (await getUserDetails()).email;
@@ -150,6 +157,12 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
       console.log(userId + " has left the chat");
     });
 
+    this.chatService.userleftInfo.subscribe((userData) => {
+      console.log(userData);
+      this.userLeft = userData.username + " " + userData.lastname;
+      console.log(this.userLeft + " has left the chat!");
+    });
+
     this.chatService.updateUserList.subscribe((userList) => {
       this._ngZone.run(() => {
         console.log('Total users = ' + userList);
@@ -166,8 +179,16 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
       console.log(userList);
       this.userList = userList;
       //Sorting the usernames list alphabetically
-      this.sorted=this.userList.sort((a,b) => a.username.localeCompare(b.username));
-      this.userCount = this.sorted.length;
+      this.sortedList=this.userList.sort((a,b) => a.username.localeCompare(b.username));
+      this.userCount = this.sortedList.length;
+    });
+
+    this.chatService.acknowledgeMessage.subscribe((message) => {
+      console.log(message);
+      //console.log(applicationAPI.getConfig());
+      if(message === "Message Delivered!"){
+        this.messageDelivered = true;
+      }
     });
   }
 }

@@ -37,6 +37,11 @@ namespace angular_dotnet_agentify.Hubs
             ); 
             await Clients.All.SendAsync("newUserList", UserList); 
         } 
+
+        public async Task acknowledgeMessage(string message) {
+          await Clients.Caller.SendAsync("notifyDelivery", message);
+          await Clients.Others.SendAsync("notifyDelivery", "Message Received!");
+        }
         public override async Task OnConnectedAsync() { 
             Count++; 
             Users.Add(Context.ConnectionId); 
@@ -53,6 +58,7 @@ namespace angular_dotnet_agentify.Hubs
             var index = UserList.Single(r => r.userId == Context.ConnectionId); 
             UserList.Remove(index); 
 
+            await Clients.Others.SendAsync("userleftInfo", index);
             await Clients.Others.SendAsync("userDisconnected", Context.ConnectionId); 
             await Clients.All.SendAsync("updateCount", Count); 
             await Clients.All.SendAsync("updateUserList", Users); 

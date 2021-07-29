@@ -5,7 +5,7 @@
     <div class="peopleButton" style="width: 20%"><button mat-button [matMenuTriggerFor]="agents"><mat-icon class="people" matBadge="{{ userCount }}" matBadgeSize="small">people</mat-icon></button></div>
     <mat-menu #agents="matMenu">
       <div style=" text-align: center; font-size: 13px;"><b>Agents Online ({{userCount}})</b></div>
-      <div *ngFor="let user of sorted">
+      <div *ngFor="let user of sortedList">
         <button mat-menu-item [matMenuTriggerFor]="users" style="font-size: 13px;"><img src="https://www.clipartmax.com/png/middle/151-1515524_green-light-button.png" class="online_icon" width="10px" height="10px">
           {{user.username}}</button>
         <mat-menu #users="matMenu">
@@ -31,6 +31,7 @@
           <!-- Displays the message with the Users DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
           <p class="myMessage" id="{{ 'message'+i }}"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
           <p class="date">{{text[2] | date: 'h:mm a'}}</p>
+          <span *ngIf="messageDelivered" class="date"><img src="https://img.icons8.com/ios/452/double-tick.png" width="9px" height="9x" style="margin-right: 5px;">Delivered</span>
         </div>
         <!-- Checks the type of the message and if it is "received" by the current user it will follow the css pertaining to received messages -->
         <div class="messageReceived" height="auto" overflow="auto" *ngIf="text[3] == 'receive'">

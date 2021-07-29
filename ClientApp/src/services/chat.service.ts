@@ -18,6 +18,8 @@ export class ChatService {
   updateUserNameList = new EventEmitter();
   addUser = new EventEmitter();
   userTyping = new EventEmitter();
+  acknowledgeMessage = new EventEmitter();
+  userleftInfo = new EventEmitter();
 
   userName;
 
@@ -96,7 +98,15 @@ export class ChatService {
 
     this.hubConnection.on("userTyping", (data) => {
       this.userTyping.emit(data);
-    })
+    });
+
+    this.hubConnection.on("notifyDelivery", (data) => {
+      this.acknowledgeMessage.emit(data);
+    });
+
+    this.hubConnection.on("userleftInfo", (data)=> {
+      this.userleftInfo.emit(data);
+    });
   }
 
 }
