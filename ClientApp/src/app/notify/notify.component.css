@@ -21,7 +21,19 @@
   border-style: solid;
   border-width: 1px;
   height: 300px;
-  overflow-y: auto;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+.chat::-webkit-scrollbar {
+  background: white;
+  border-radius: 4px;
+  width: 8px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+  background: lightskyblue;
+  border-radius: 4px;
 }
 
 .online_icon{
@@ -41,17 +53,9 @@
   font-size: 20px;
 }
 
-.chat::-webkit-scrollbar {
-  display: none;
-}
-
 .head_of_sms {
-  margin-top: 5px;
   border-style: solid;
   border-width: 1px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  margin-top: 10px;
   padding: 5px;
   display: flex;
   position: relative;
@@ -68,8 +72,6 @@
 .textBar {
   border-style: solid;
   border-width: 1px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
   overflow:auto;
   display: flex;
   width:auto;
@@ -134,6 +136,7 @@ p {
   margin-top: 10px;
   margin-bottom: 10px;
   float: left;
+  overflow-wrap: break-word;
 	background-color: #fff;
 	padding: 15px 15px;
 	font-size: 10px;

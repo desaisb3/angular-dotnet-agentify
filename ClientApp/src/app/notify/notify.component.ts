@@ -30,6 +30,8 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
   userList: any[] = [];
   sorted: any[] = [];
   userCount;
+  isAgent;
+  config;
 
 
   constructor(private _ngZone: NgZone, private chatService: ChatService) {
@@ -43,17 +45,24 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
   @ViewChild('entireChat', {static: false}) chatElement: ElementRef;
 
   async ngOnInit() {
+    this.config = await applicationAPI.getConfig();
     await initializeComplete().then(configReturn => {
       //this.config = configReturn;
     });
     this.userName = (await getUserDetails()).firstName;
     this.userLastName = (await getUserDetails()).lastName;
     this.userEmail = (await getUserDetails()).email;
+    this.isAgent = this.config["variables"]["isAgent"];
+    console.log("this isAgent is: " + this.isAgent);
   }
 
 
   ngAfterViewChecked(): void {
-    applicationAPI.setAppHeight(450);
+    if(this.isAgent == true) {
+      applicationAPI.setAppHeight(0);
+    } else {
+      applicationAPI.setAppHeight(415);
+    }
   }
 
   triggerResize() {
@@ -70,11 +79,11 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
   //  - Setter for a new message that will then be sent to all connected clients
   async textSent(inputText: string) {
     (<HTMLInputElement>document.getElementById('notificationInput')).value = "";
-    let userName = (await getUserDetails()).firstName + " " + (await getUserDetails()).lastName;
+    let username = this.userName + " " + this.userLastName
     let myDate: Date = new Date();
-    let arr =  [userName, inputText, myDate, "send"];
+    let arr =  [username, inputText, myDate, "send"];
     this.sendingMessage.message = inputText;
-    this.sendingMessage.user = userName;
+    this.sendingMessage.user = username;
     this.sendingMessage.clientid = this.userUniqueId;
     this.sendingMessage.date = myDate;
     this.sendingMessage.type = "send";
@@ -119,7 +128,7 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
         let messageArray = [message.user, message.message, message.date, message.type, message.clientid];
         if(message.clientid !== this.userUniqueId) {
           this.texts.push(messageArray);
-          sendNotification(this.message + message.user, this.notificationType);
+          sendNotification(this.message + message.user + ": " + message.message, this.notificationType);
         }
       });
     });
