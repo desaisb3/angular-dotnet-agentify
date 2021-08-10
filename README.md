@@ -44,7 +44,7 @@ The end result should look like:
     ![alt text](/ClientApp/src/assets/images/host_remapping.png)
 
 **3.)** In the terminal, call dotnet run in the project.
-    ![alt text](/ClientApp/src/assests/images/dotnet_run.png)
+    ![alt text](/ClientApp/src/assets/images/dotnet_run.png)
 
 **4.)** Check localhost:5007 and the URL used from step 1b and if prompted, advance past the security warning.
 
@@ -58,6 +58,7 @@ The end result should look like:
 ![alt text](/ClientApp/src/assets/images/supervisor_notification.png)
 
 **8.)** When this chat message is sent on the supervisor side, the agent's softphone will display a information notification with the user's name who sent the notification and the message following. This message will remain until the agent has closed out the notification.
+
 ![alt text](/ClientApp/src/assets/images/agent_receiving.png)
 
 **9.)** In the scenario that multiple supervisors are present online, the supervisor sending the chat will see their notification as a typical group texting application on cell phones, on the right of the screen with a blue messaging bubble. Supervisors on the receiving end of this notification, will be prompted with an information notification at the top informing that there is a notification; however, unlike agents they will not see the content of the notification unless they view it in the DaVinci Chat window. Received messages will be displayed on the left of the chat window, just like text messages received on your cell phone.
