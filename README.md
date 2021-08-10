@@ -12,12 +12,6 @@ cd ClientApp
 
 npm install
 
-npm i @amc-technology/davinci-api
-
-npm install @angular/material @angular/cdk
-
-npm i @aspnet/signalr
-
 ```
 
   
