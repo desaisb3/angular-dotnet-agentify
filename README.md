@@ -35,7 +35,7 @@ The end result should look like:
 
 ![alt text](/ClientApp/src/assets/images/notification_config.png)
 
-**2.)** Run Fiddler and open **Tools --> HOSTS** then remap `localhost:5007` to the URL used in the configuration for step 1b and click Save. Minimize Fiddler and go to Step 3.
+**2.)** Open Fiddler and go to **Tools --> HOSTS** then remap `localhost:5007` to the URL used in the configuration for step 1b and click Save. Minimize Fiddler and go to Step 3.
 
  ![alt text](/ClientApp/src/assets/images/host_remapping.png)
 
