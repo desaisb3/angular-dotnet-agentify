@@ -35,17 +35,17 @@ The end result should look like:
 
 ![alt text](/ClientApp/src/assets/images/notification_config.png)
 
-**2.)** Run fiddler and Host remap localhost:5007 to the URL used in the configuration for step 1b.
+**2.)** Run Fiddler and open **Tools --> HOSTS** then remap `localhost:5007` to the URL used in the configuration for step 1b and click Save. Minimize Fiddler and go to Step 3.
 
  ![alt text](/ClientApp/src/assets/images/host_remapping.png)
 
-**3.)** In the terminal, call `dotnet run` in the project.
+**3.)** In the terminal, call `dotnet run` command in the root folder(where the `Startup.cs` file exists).
 
   ![alt text](/ClientApp/src/assets/images/dotnet_run.png)
 
 **4.)** Check `localhost:5007` and the URL used from step 1b and if prompted, advance past the security warning.
 
-**5.)** Open salesforce, go to Service Console, open the softphone and the project should appear.
+**5.)** Login to [Salesforce](https://login.salesforce.com/), go to Service Console, open the softphone and the project should appear.
 
    ![alt text](/ClientApp/src/assets/images/softphone_w_notification.png)
 
