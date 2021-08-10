@@ -37,17 +37,17 @@ The end result should look like:
 
 **2.)** Run fiddler and Host remap localhost:5007 to the URL used in the configuration for step 1b.
 
-    ![alt text](/ClientApp/src/assets/images/host_remapping.png)
+ ![alt text](/ClientApp/src/assets/images/host_remapping.png)
 
 **3.)** In the terminal, call dotnet run in the project.
 
-    ![alt text](/ClientApp/src/assets/images/dotnet_run.png)
+  ![alt text](/ClientApp/src/assets/images/dotnet_run.png)
 
 **4.)** Check localhost:5007 and the URL used from step 1b and if prompted, advance past the security warning.
 
 **5.)** Open salesforce, go to Service Console, open the softphone and the project should appear.
 
-    ![alt text](/ClientApp/src/assets/images/softphone_w_notification.png)
+   ![alt text](/ClientApp/src/assets/images/softphone_w_notification.png)
 
 **6.)** When testing as a supervisor (isAgent = false), the hub connection (server in which the chat will be hosted) has not been established until the badge indicating how many users are connected is displayed on the user icon in the top left of the DaVinci Chat. Any chat sent before that badge will not be displayed.
 
