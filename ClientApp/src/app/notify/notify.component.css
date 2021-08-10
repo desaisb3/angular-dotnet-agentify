@@ -84,7 +84,7 @@
 
 .textMessage {
   margin-left: 5px;
-  margin-top: 10px;
+  margin-top: 13px;
   overflow-wrap: break-word;
   display: inline-block;
   vertical-align: middle;
@@ -142,4 +142,66 @@ p {
 	font-size: 10px;
 	border-radius: 1rem;
   box-shadow:	0 0.125rem 0.5rem rgba(0, 0, 0, .3), 0 0.0625rem 0.125rem rgba(0, 0, 0, .2);
+}
+
+.viewResizeImage {
+  width: 20px;
+  height: 20px;
+  float: right;
+  cursor: pointer;
+}
+
+.collapseLabel {
+  margin-left: 10px;
+  color: #333333;
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+}
+
+.collapse {
+  background-color: #f4f5fb !important;
+  width: 100% !important;
+  margin-top: 0px !important;
+  border: 1px solid #939598 !important;
+  font-family: Arial;
+  padding-top: 2px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+  font-size: 12.6px;
+  display: block;
+  margin: 4px 5% 0 0px;
+}
+
+.collapseDisplay {
+  margin-bottom: 8px;
+  display: grid;
+  background-color: #ffffff;
+}
+
+.callBody {
+    border: 1px solid #939598;
+    border-top-color: rgb(147, 149, 152);
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top: 0;
+    position: relative;
+    display: block;
+}
+
+.editorFullDisplay {
+  font-size: 0.9em;
+  width: 100%;
+  text-align: left;
+  font-family: Arial;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border: 0;
+  padding-top: 2px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }

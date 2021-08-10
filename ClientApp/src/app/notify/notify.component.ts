@@ -1,5 +1,5 @@
 import { ChatService } from './../../services/chat.service';
-import { Component, OnInit, NgZone, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { initializeComplete, NOTIFICATION_TYPE, INotificationMessage, sendNotification, getUserDetails, setAppHeight } from '@amc-technology/davinci-api';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {take} from 'rxjs/operators';
@@ -12,7 +12,7 @@ import * as applicationAPI from '@amc-technology/davinci-api';
   templateUrl: './notify.component.html',
   styleUrls: ['./notify.component.css']
 })
-export class NotifyComponent implements OnInit, INotificationMessage, AfterViewChecked {
+export class NotifyComponent implements OnInit, INotificationMessage {
 
   //Creating empty array where messages will be held
   public texts = [];
@@ -49,26 +49,44 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
     await initializeComplete().then(configReturn => {
       //this.config = configReturn;
     });
-    this.userName = (await getUserDetails()).firstName;
-    this.userLastName = (await getUserDetails()).lastName;
-    this.userEmail = (await getUserDetails()).email;
     this.isAgent = this.config["variables"]["isAgent"];
+    if(this.isAgent === undefined) {
+      this.isAgent = true;
+    }
     console.log("this isAgent is: " + this.isAgent);
-  }
-
-
-  ngAfterViewChecked(): void {
     if(this.isAgent == true) {
       applicationAPI.setAppHeight(0);
     } else {
-      applicationAPI.setAppHeight(415);
+      applicationAPI.setAppHeight(433);
     }
+    this.userName = (await getUserDetails()).firstName;
+    this.userLastName = (await getUserDetails()).lastName;
+    this.userEmail = (await getUserDetails()).email;
   }
 
   triggerResize() {
     // Wait for changes to be applied, then trigger textarea resize.
     this._ngZone.onStable.pipe(take(1))
         .subscribe(() => this.autosize.resizeToFitContent(true));
+  }
+
+  triggerMinimize() {
+    let contentDiv = document.getElementById("minimizeContent");
+    let image = document.getElementById("arrow");
+    console.log(image);
+    console.log(image.id);
+    console.log(typeof image);
+    if(contentDiv.style.display == "block") {
+      contentDiv.style.display = "none";
+      applicationAPI.setAppHeight(36);
+      image.setAttribute('src', 'https://amcdavincistorage.blob.core.windows.net/icon-pack/section_expand.png');
+      image.title = "Expand";
+    } else {
+      contentDiv.style.display = "block";
+      image.setAttribute('src', 'https://amcdavincistorage.blob.core.windows.net/icon-pack/section_collapse.png');
+      applicationAPI.setAppHeight(433);
+      image.title = "Collapse";
+    }
   }
 
   //Occurs on button click or when just enter is pressed
@@ -134,8 +152,12 @@ export class NotifyComponent implements OnInit, INotificationMessage, AfterViewC
       this._ngZone.run(() => {
         let messageArray = [message.user, message.message, message.date, message.type, message.clientid];
         if(message.clientid !== this.userUniqueId) {
-          this.texts.push(messageArray);
-          sendNotification(this.message + message.user + ": " + message.message, this.notificationType);
+          if(this.isAgent == true) {
+            sendNotification(this.message + message.user + ": " + message.message, this.notificationType);
+          } else {
+            this.texts.push(messageArray);
+            sendNotification("Notification sent from " + message.user, this.notificationType);
+          }
         }
       });
     });
