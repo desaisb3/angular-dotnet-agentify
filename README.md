@@ -28,21 +28,25 @@ npm install
 
 **1.)** If an app has not already been created, create a DaVinci Creator Studio App associated to this project.
 Configure the app with the appropriate setting by clicking the app, pressing the "More" button, config, and finally app name:
-*  **1a.)** Create a variable, if one is not present, called isAgent (**DO NOT** change the name of the isAgent variable or the code will not work) and give it the type Boolean. (isAgent is a variable that will allow the user to track if they will see agent view, no additions to the soft phone but will receive DaVinci information notifications, or supervisor view, which will have an additional dropdown containing the DaVinci Chat application.)
+*  **1a.)** Create a variable, if one is not present, called `isAgent` (**DO NOT** change the name of the isAgent variable or the code will not work) and give it the type `Boolean`. (`isAgent` is a variable that will allow the user to track if they will see agent view, no additions to the soft phone but will receive DaVinci information notifications, or supervisor view, which will have an additional dropdown containing the DaVinci Chat application.)
 *  **1b.)** Set the URL to the website you wish to direct the application to a secured network.
 (Ex. notification.contactcanvas.com)
 The end result should look like:
+
 ![alt text](/ClientApp/src/assets/images/notification_config.png)
 
 **2.)** Run fiddler and Host remap localhost:5007 to the URL used in the configuration for step 1b.
+
     ![alt text](/ClientApp/src/assets/images/host_remapping.png)
 
 **3.)** In the terminal, call dotnet run in the project.
+
     ![alt text](/ClientApp/src/assets/images/dotnet_run.png)
 
 **4.)** Check localhost:5007 and the URL used from step 1b and if prompted, advance past the security warning.
 
 **5.)** Open salesforce, go to Service Console, open the softphone and the project should appear.
+
     ![alt text](/ClientApp/src/assets/images/softphone_w_notification.png)
 
 **6.)** When testing as a supervisor (isAgent = false), the hub connection (server in which the chat will be hosted) has not been established until the badge indicating how many users are connected is displayed on the user icon in the top left of the DaVinci Chat. Any chat sent before that badge will not be displayed.
