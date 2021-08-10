@@ -18,9 +18,9 @@ npm install
 
 # Software Dependencies
 
-Dotnet Core 2.1 or higher
-
-Node js
+*  dotnet Core 2.1 or higher (https://dotnet.microsoft.com/download/dotnet/2.2)
+*  nodejs (https://nodejs.org/en/download/)
+*  Fiddler (https://www.telerik.com/download/fiddler)
 
   
 
