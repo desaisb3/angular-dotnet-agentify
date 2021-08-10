@@ -69,6 +69,6 @@ This List of users connected to the chat application can be located by pressing 
   
 
 # Contribute
-Help us contribute by adding some of these features:
+Help us imporve by contributing some of these features:
 *  Create a search bar within the user list.
 *  Indicate when a user leaves. Print "User_First_Name User_Last_Name has left the chat" within the chat window.
