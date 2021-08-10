@@ -65,6 +65,7 @@ The end result should look like:
 **List of Users Connected to Chat Application:**
 This List of users connected to the chat application can be located by pressing the icon that looks like two people. When clicked, a drop down menu will be displayed with all users. If you were to hover over a particular user, the user's full name will be displayed, as well as their email.
 
+![usersgif](/ClientApp/src/assets/images/UsersGif.gif)
   
 
 # Contribute
