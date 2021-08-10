@@ -18,7 +18,7 @@ npm install
 
 # Software Dependencies
 
-*  dotnet Core 2.1 or higher (https://dotnet.microsoft.com/download/dotnet/2.2)
+*  dotnet core 2.1 or higher (https://dotnet.microsoft.com/download/dotnet/2.2)
 *  nodejs (https://nodejs.org/en/download/)
 *  Fiddler (https://www.telerik.com/download/fiddler)
 
@@ -28,8 +28,8 @@ npm install
 
 **1.)** If an app has not already been created, create a DaVinci Creator Studio App associated to this project.
 Configure the app with the appropriate setting by clicking the app, pressing the "More" button, config, and finally app name:
-**1a.)** Create a variable, if one is not present, called isAgent (**DO NOT** change the name of the isAgent variable or the code will not work) and give it the type Boolean. (isAgent is a variable that will allow the user to track if they will see agent view, no additions to the soft phone but will receive DaVinci information notifications, or supervisor view, which will have an additional dropdown containing the DaVinci Chat application.)
-**1b.)** Set the URL to the website you wish to direct the application to a secured network.
+*  **1a.)** Create a variable, if one is not present, called isAgent (**DO NOT** change the name of the isAgent variable or the code will not work) and give it the type Boolean. (isAgent is a variable that will allow the user to track if they will see agent view, no additions to the soft phone but will receive DaVinci information notifications, or supervisor view, which will have an additional dropdown containing the DaVinci Chat application.)
+*  **1b.)** Set the URL to the website you wish to direct the application to a secured network.
 (Ex. notification.contactcanvas.com)
 The end result should look like:
 ![alt text](/ClientApp/src/assets/images/notification_config.png)
