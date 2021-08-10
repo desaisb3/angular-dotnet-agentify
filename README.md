@@ -46,9 +46,11 @@ The end result should look like:
     ![alt text](/ClientApp/src/assets/images/softphone_w_notification.png)
 
 **6.)** When testing as a supervisor (isAgent = false), the hub connection (server in which the chat will be hosted) has not been established until the badge indicating how many users are connected is displayed on the user icon in the top left of the DaVinci Chat. Any chat sent before that badge will not be displayed.
+
 ![alt text](/ClientApp/src/assets/images/no_badge.png)
 
 **7.)** When using the chat application, simply type in the text bar and when ready to send the notification, press enter or click the send button to the right of the input box. The message will then be displayed with in the chat window with a time stamp and an acknowledgment if the chat has been deliver to all clients.
+
 ![alt text](/ClientApp/src/assets/images/supervisor_notification.png)
 
 **8.)** When this chat message is sent on the supervisor side, the agent's softphone will display a information notification with the user's name who sent the notification and the message following. This message will remain until the agent has closed out the notification.
@@ -69,6 +71,6 @@ This List of users connected to the chat application can be located by pressing 
   
 
 # Contribute
-Help us imporve by contributing some of these features:
+Help us improve by contributing some of these features:
 *  Create a search bar within the user list.
 *  Indicate when a user leaves. Print "User has left the chat" within the chat window.
