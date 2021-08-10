@@ -17,7 +17,8 @@ npm install
   
 
 # Software Dependencies
-
+Using a Windows machine is recommended to test this project.
+Download the following tools to run the project:
 *  dotnet core 2.1 or higher (https://dotnet.microsoft.com/download/dotnet/2.2)
 *  nodejs (https://nodejs.org/en/download/)
 *  Fiddler (https://www.telerik.com/download/fiddler)
