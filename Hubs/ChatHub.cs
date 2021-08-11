@@ -30,7 +30,7 @@ namespace angular_dotnet_agentify.Hubs
             } 
             catch (Exception e) { 
                 index = null; 
-                Console.WriteLine("UserId is unique! Adding this user to the list."); 
+                //Console.WriteLine("UserId is unique! Adding this user to the list."); 
             } 
             if(index == null) 
                 UserList.Add(new Users() {userId=Context.ConnectionId, username=userName, email=userEmail, lastname=userLastName}

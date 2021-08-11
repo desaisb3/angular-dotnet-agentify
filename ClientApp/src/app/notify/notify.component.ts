@@ -49,11 +49,12 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     await initializeComplete().then(configReturn => {
       //this.config = configReturn;
     });
+    //Grab app configuration for if the user is a agent or supervisor
     this.isAgent = this.config["variables"]["isAgent"];
+    //If the app configuration does not exist, defaulted to agent environment
     if(this.isAgent === undefined) {
       this.isAgent = true;
     }
-    console.log("this isAgent is: " + this.isAgent);
     if(this.isAgent == true) {
       applicationAPI.setAppHeight(0);
     } else {
@@ -64,18 +65,21 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     this.userEmail = (await getUserDetails()).email;
   }
 
+  //When text exceeds the text area width, it will automatically add a new line
   triggerResize() {
     // Wait for changes to be applied, then trigger textarea resize.
     this._ngZone.onStable.pipe(take(1))
         .subscribe(() => this.autosize.resizeToFitContent(true));
   }
 
+  //Collapsable for DaVinci Chat
+  //  -Grabs the arrow image and everytime it is clicked:
+  //    1.) checks the display
+  //      a.)If display is shown, hide content and adjust app height
+  //      b.)If display is hidden, show content and adjust app height
   triggerMinimize() {
     let contentDiv = document.getElementById("minimizeContent");
     let image = document.getElementById("arrow");
-    console.log(image);
-    console.log(image.id);
-    console.log(typeof image);
     if(contentDiv.style.display == "block") {
       contentDiv.style.display = "none";
       applicationAPI.setAppHeight(36);
@@ -107,7 +111,6 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     this.sendingMessage.type = "send";
 
     if(this.sortedList.length==1){
-      console.log('Only you are in the chat!');
       return alert('Only you are in the chat!');
     }
 
@@ -121,7 +124,6 @@ export class NotifyComponent implements OnInit, INotificationMessage {
       //clients
       this.chatService.hubConnection.invoke('acknowledgeMessage', "Message Delivered!");
       let lastMessage = this.getLastMessage();
-      console.log(lastMessage);
       // Scrolls to the most recent message, only scrolls for sent messages
       setTimeout(() => lastMessage.scrollTo({behavior: "smooth", top: lastMessage.scrollHeight}),0);
     }
@@ -161,53 +163,54 @@ export class NotifyComponent implements OnInit, INotificationMessage {
         }
       });
     });
-
+    //On a user connecting to the hub, grab the user first name and email from DaVinci
     this.chatService.userConnected.subscribe(async (userId)=>{
       this.userName = (await getUserDetails()).firstName;
       this.userEmail = (await getUserDetails()).email;
-      console.log(userId + " has joined the chat");
     });
 
+    //Updates the count of users in the hub depending on disconnection or new connection
     this.chatService.updateCount.subscribe((count) => {
       this._ngZone.run(() => {
-        console.log('Total users = ' + count);
         this.usersOnline=count;
       });
     });
 
     this.chatService.userDisconnected.subscribe((userId)=>{
-      console.log(userId + " has left the chat");
+      //console.log(userId + " has left the chat");
     });
 
+    //On user disconnection
+    //  -Grabs user disconnecting's details
+    //  -Creates an array of exit response, type of message, placeholder, placeholder
+    //  -Adds to the message array so it can outputed to all users chat windows
     this.chatService.userleftInfo.subscribe((userData) => {
-      console.log(userData);
       this.userLeft = userData.username + " " + userData.lastname;
-      console.log(this.userLeft + " has left the chat!");
+      let leavingUser = [this.userLeft + "\nhas left the chat!", "userLeft", "none", "none"];
+      this.texts.push(leavingUser);
     });
 
+    //Updates userlist depedning on new connections or disconnections
     this.chatService.updateUserList.subscribe((userList) => {
       this._ngZone.run(() => {
-        console.log('Total users = ' + userList);
-        console.log(userList);
         this.allUsers=userList;
       });
     });
 
+    //Refreshes the list of active users
     this.chatService.connectionEstablished.subscribe(() => {
       this.refreshList();
     });
 
     this.chatService.addUser.subscribe((userList)=> {
-      console.log(userList);
       this.userList = userList;
       //Sorting the usernames list alphabetically
       this.sortedList=this.userList.sort((a,b) => a.username.localeCompare(b.username));
       this.userCount = this.sortedList.length;
     });
 
+    //Upon delivery of the message, grabs the emittion of data from hub confirming the message was received
     this.chatService.acknowledgeMessage.subscribe((message) => {
-      console.log(message);
-      //console.log(applicationAPI.getConfig());
       if(message === "Message Delivered!"){
         this.messageDelivered = true;
       }

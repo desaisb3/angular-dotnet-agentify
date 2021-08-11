@@ -59,11 +59,9 @@ export class ChatService {
       .start()
       .then(() => {
         this.isConnectionEstablished = true;
-        console.log('Hub connection started');
         this.connectionEstablished.emit(true);
       })
       .catch(err => {
-        console.log("Error while establishing connection, retrying...");
         setTimeout(function () {
           this.startConnection(); }, 5000);
       });
