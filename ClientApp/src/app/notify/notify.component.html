@@ -34,19 +34,19 @@
             <!-- A loop of the text messages sent and received -->
             <div class="paragraphs" *ngFor="let text of texts; let i = index">
               <!-- Checks the type of the message and if it is "sent" by the current user it will follow the css pertaining to sent messages -->
-              <div class="sentTexts" height="auto" overflow="auto" *ngIf="text[3] == 'send'">
+              <div class="sentTexts" height="auto" overflow="auto" *ngIf="text[3] == messageType.Send">
                 <!-- Displays the message with the Users DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
-                <p class="myMessage"> <b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
+                <p class="myMessage"><b>{{ text[0] }}</b>&#11088;<br> {{ text[1] }}</p>
                 <p class="date">{{text[2] | date: 'h:mm a'}}</p>
                 <span *ngIf="messageDelivered" class="date"><img src="https://img.icons8.com/ios/452/double-tick.png" width="9px" height="9x" style="margin-right: 5px;">Delivered</span>
               </div>
               <!-- Checks the type of the message and if it is "received" by the current user it will follow the css pertaining to received messages -->
-              <div class="messageReceived" height="auto" overflow="auto" *ngIf="text[3] == 'receive'">
+              <div class="messageReceived" height="auto" overflow="auto" *ngIf="text[3] == messageType.Receive">
                 <!-- Displays the message with the senders DaVinci Creator Studio name, the message underneath it, and the time the message was sent-->
                 <p class="response"><b>{{ text[0] }}</b><br> {{ text[1] }}</p>
                 <p class="responseDate">{{text[2] | date: 'h:mm a'}}</p>
               </div>
-              <div class="leftUser" height="auto" overflow="auto" *ngIf="text[1] == 'userLeft'">
+              <div class="leftUser" height="auto" overflow="auto" *ngIf="text[1] == messageType.UserLeft">
                 <p>{{ text[0] }}</p>
               </div>
             </div>

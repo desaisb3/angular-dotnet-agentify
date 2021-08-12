@@ -3,9 +3,8 @@ import { Component, OnInit, NgZone, ViewChild, ElementRef } from '@angular/core'
 import { initializeComplete, NOTIFICATION_TYPE, INotificationMessage, sendNotification, getUserDetails, setAppHeight } from '@amc-technology/davinci-api';
 import {CdkTextareaAutosize} from '@angular/cdk/text-field';
 import {take} from 'rxjs/operators';
-import { Message } from '../../models/message';
+import { Message, MessageType } from '../../models/message';
 import * as applicationAPI from '@amc-technology/davinci-api';
-
 
 @Component({
   selector: 'app-notify',
@@ -19,26 +18,30 @@ export class NotifyComponent implements OnInit, INotificationMessage {
   public sendingMessage = new Message();
   //A unique id is created for the hub connection
   public userUniqueId: string = new Date().getTime().toString();
-  userName;
-  userLastName;
-  userEmail;
-  usersOnline;      
-  allUsers;
-  userId;
-  userList: any[] = [];
-  sortedList: any[] = [];
-  userCount;
-  isAgent;
-  config;
-  userLeft;
-  messageDelivered = false;
+  public userName: string;
+  public userLastName: string;
+  public userEmail: string;
+  public usersOnline: number;      
+  public allUsers: any;
+  public userId: string;
+  public userList: any[] = [];
+  public sortedList: any[] = [];
+  public userCount: number;
+  public isAgent: boolean;
+  public config: any;
+  public userLeft: string;
+  public messageDelivered: boolean = false;
+  public user: any;
+  public smallestAppHeight: number = 36; //Smallest value to still fit all of the app when collapsed
+  public largestAppHeight: number = 433; //App height that shows entirity of expanded app
+  public messageType = MessageType;
 
 
   constructor(private _ngZone: NgZone, private chatService: ChatService) {
     this.subscribeToEvents();
    }
 
-  message: string = "New Message From ";
+   public message: string = "New Message From ";
   notificationType: NOTIFICATION_TYPE.Information;
 
   @ViewChild('autosize', {static: false}) autosize: CdkTextareaAutosize;
@@ -58,11 +61,13 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     if(this.isAgent == true) {
       applicationAPI.setAppHeight(0);
     } else {
-      applicationAPI.setAppHeight(433);
+      applicationAPI.setAppHeight(this.largestAppHeight);
     }
-    this.userName = (await getUserDetails()).firstName;
-    this.userLastName = (await getUserDetails()).lastName;
-    this.userEmail = (await getUserDetails()).email;
+
+    this.user=(await getUserDetails());
+    this.userName = this.user.firstName;
+    this.userLastName = this.user.lastName;
+    this.userEmail = this.user.email;
   }
 
   //When text exceeds the text area width, it will automatically add a new line
@@ -82,13 +87,13 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     let image = document.getElementById("arrow");
     if(contentDiv.style.display == "block") {
       contentDiv.style.display = "none";
-      applicationAPI.setAppHeight(36);
+      applicationAPI.setAppHeight(this.smallestAppHeight);
       image.setAttribute('src', 'https://amcdavincistorage.blob.core.windows.net/icon-pack/section_expand.png');
       image.title = "Expand";
     } else {
       contentDiv.style.display = "block";
       image.setAttribute('src', 'https://amcdavincistorage.blob.core.windows.net/icon-pack/section_collapse.png');
-      applicationAPI.setAppHeight(433);
+      applicationAPI.setAppHeight(this.largestAppHeight);
       image.title = "Collapse";
     }
   }
@@ -101,14 +106,19 @@ export class NotifyComponent implements OnInit, INotificationMessage {
   //  - Setter for a new message that will then be sent to all connected clients
   async textSent(inputText: string) {
     (<HTMLInputElement>document.getElementById('notificationInput')).value = "";
-    let username = this.userName + " " + this.userLastName
+    let username = this.userEmail;
+    //let username = this.userName + " " + this.userLastName
+
     let myDate: Date = new Date();
-    let arr =  [username, inputText, myDate, "send"];
+    let arr =  [username, inputText, myDate, this.messageType.Send];
     this.sendingMessage.message = inputText;
     this.sendingMessage.user = username;
     this.sendingMessage.clientid = this.userUniqueId;
     this.sendingMessage.date = myDate;
-    this.sendingMessage.type = "send";
+
+    this.sendingMessage.type = this.messageType.Send;
+    console.log(this.sendingMessage.type);
+    //this.sendingMessage.type = "send";
 
     if(this.sortedList.length==1){
       return alert('Only you are in the chat!');
@@ -117,7 +127,10 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     if(inputText.trim() != "" && this.sortedList.length>1)
     {
       this.texts.push(arr);
-      this.sendingMessage.type = "receive";
+
+      this.sendingMessage.type = this.messageType.Receive;
+      console.log(this.sendingMessage.type);
+      //this.sendingMessage.type = "receive";
       this.chatService.sendMessage(this.sendingMessage); //Call send message to send it to everyone (Should be the only update required in this method)
       //Invoke 'acknowledgeMessage' method in the server which will
       //ensure that the message was indeed delivered to all the connected
@@ -137,9 +150,11 @@ export class NotifyComponent implements OnInit, INotificationMessage {
   //Method to invoke when the client clicks on the 'Start Chat' button
   //to refresh the Active Users list
    async refreshList() {
-    this.userName = (await getUserDetails()).firstName;
-    this.userLastName = (await getUserDetails()).lastName;
-    this.userEmail = (await getUserDetails()).email;
+
+    this.user = (await getUserDetails());
+    this.userName = this.user.firstName;
+    this.userLastName = this.user.lastName;
+    this.userEmail = this.user.email;
     //Send the username to the server to bind it with connectionID
     //and send the userlist (Active Users) to all connected clients
     this.chatService.hubConnection.send('addNewUser', this.userName, this.userEmail, this.userLastName);
@@ -163,35 +178,29 @@ export class NotifyComponent implements OnInit, INotificationMessage {
         }
       });
     });
+
     //On a user connecting to the hub, grab the user first name and email from DaVinci
-    this.chatService.userConnected.subscribe(async (userId)=>{
-      this.userName = (await getUserDetails()).firstName;
-      this.userEmail = (await getUserDetails()).email;
-    });
+    this.chatService.userConnected.subscribe();
 
     //Updates the count of users in the hub depending on disconnection or new connection
-    this.chatService.updateCount.subscribe((count) => {
-      this._ngZone.run(() => {
-        this.usersOnline=count;
-      });
+    this.chatService.updateCount.subscribe((count: number) => {
+      this.usersOnline=count;
     });
 
-    this.chatService.userDisconnected.subscribe((userId)=>{
-      //console.log(userId + " has left the chat");
-    });
+    this.chatService.userDisconnected.subscribe();
 
     //On user disconnection
     //  -Grabs user disconnecting's details
     //  -Creates an array of exit response, type of message, placeholder, placeholder
     //  -Adds to the message array so it can outputed to all users chat windows
-    this.chatService.userleftInfo.subscribe((userData) => {
+    this.chatService.userleftInfo.subscribe((userData: any) => {
       this.userLeft = userData.username + " " + userData.lastname;
-      let leavingUser = [this.userLeft + "\nhas left the chat!", "userLeft", "none", "none"];
+      let leavingUser = [this.userLeft + "\nhas left the chat!", this.messageType.UserLeft, "none", "none"];
       this.texts.push(leavingUser);
     });
 
     //Updates userlist depedning on new connections or disconnections
-    this.chatService.updateUserList.subscribe((userList) => {
+    this.chatService.updateUserList.subscribe((userList: any) => {
       this._ngZone.run(() => {
         this.allUsers=userList;
       });
@@ -202,7 +211,7 @@ export class NotifyComponent implements OnInit, INotificationMessage {
       this.refreshList();
     });
 
-    this.chatService.addUser.subscribe((userList)=> {
+    this.chatService.addUser.subscribe((userList: any)=> {
       this.userList = userList;
       //Sorting the usernames list alphabetically
       this.sortedList=this.userList.sort((a,b) => a.username.localeCompare(b.username));
@@ -210,7 +219,7 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     });
 
     //Upon delivery of the message, grabs the emittion of data from hub confirming the message was received
-    this.chatService.acknowledgeMessage.subscribe((message) => {
+    this.chatService.acknowledgeMessage.subscribe((message: string) => {
       if(message === "Message Delivered!"){
         this.messageDelivered = true;
       }
