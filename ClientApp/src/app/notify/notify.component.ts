@@ -52,8 +52,13 @@ export class NotifyComponent implements OnInit, INotificationMessage {
     await initializeComplete().then(configReturn => {
       //this.config = configReturn;
     });
-    //Grab app configuration for if the user is a agent or supervisor
-    this.isAgent = this.config["variables"]["isAgent"];
+    if(!this.config.hasOwnProperty('variables')) {
+      throw 'Variables property not in config';
+    }
+    if(this.config['variables'].hasOwnProperty('isAgent')) {
+      //Grab app configuration for if the user is a agent or supervisor
+      this.isAgent = this.config["variables"]["isAgent"];
+    }
     //If the app configuration does not exist, defaulted to agent environment
     if(this.isAgent === undefined) {
       this.isAgent = true;
